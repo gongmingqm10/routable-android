@@ -94,7 +94,7 @@ public class UserActivity extends Activity {
 
 More special, if we want to put a direct url params into our router map, how can it compile with `/`
 
-We can use Router.safeEncode() to encode some special params to avoid router mistake. Of course, we can put what we want to Bundle
+We can use `Router.safeEncode()` to encode some special params to avoid router compile mistakes. Of course, we can put what we want to Bundle
 
 ```java
 Intent intent = Router.sharedRouter().intentFor(
