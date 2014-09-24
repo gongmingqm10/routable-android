@@ -1,5 +1,6 @@
 package com.usepropeller.routable.test;
 
+import android.os.Bundle;
 import com.usepropeller.routable.Router;
 
 import junit.framework.Assert;
@@ -42,13 +43,26 @@ public class RouterTest extends AndroidTestCase {
 		Assert.assertTrue("Invalid route did not throw exception", exceptionThrown);
 	}
 
-    public void test_complex_params() {
+    public void test_special_params() {
         Router.sharedRouter().map("web/:url/:title", ListActivity.class);
         Intent intent = Router.sharedRouter().intentFor(
                 String.format("web/%s/%s", Router.safeEncode("http://google.com"), Router.safeEncode("Google"))
         );
         Assert.assertEquals("Intent should get correct URL", intent.getStringExtra("url"), "http://google.com");
         Assert.assertEquals("Title should also be correct", intent.getStringExtra("title"), "Google");
+    }
+
+    public void test_bundle_params() {
+        Router.sharedRouter().map("player", ListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("source", "youtube");
+        bundle.putInt("type", 100);
+        bundle.putBoolean("flag", true);
+        Intent intent = Router.sharedRouter().intentFor("player", bundle);
+        Bundle realBundle = intent.getExtras();
+        Assert.assertEquals(realBundle.get("source"), "youtube");
+        Assert.assertEquals(realBundle.get("type"), 100);
+        Assert.assertEquals(realBundle.get("flag"), true);
     }
 
 }

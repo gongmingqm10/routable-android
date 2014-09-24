@@ -193,8 +193,7 @@ public class Router {
 		if (context == null) {
             throw new ContextNotProvided();
         }
-		Intent intent = this.intentFor(context, url);
-		if (extras != null) intent.putExtras(extras);
+		Intent intent = this.intentFor(context, url, extras);
 		context.startActivity(intent);
 	}
 
@@ -203,23 +202,33 @@ public class Router {
 	 * @return The {@link Intent} for the url
 	 */
 	public Intent intentFor(String url) {
-		return intentFor(mContext, url);
+		return intentFor(mContext, url, null);
 	}
-	/**
-	 *
-	 * @param context The context which is spawning the intent
+
+    /**
+     *
+     * @param context The context which is spawning the intent
      * @param url The URL; for example, "users/16" or "groups/5/topics/20"
-	 * @return The {@link Intent} for the url, with the correct {@link Activity} set, or null.
-	 */
-	public Intent intentFor(Context context, String url) {
-		RouterParams params = this.paramsForUrl(url);
+     * @return The {@link Intent} for the url, with the correct {@link Activity} set, or null.
+     */
+    public Intent intentFor(Context context, String url) {
+        return intentFor(context, url, null);
+    }
+
+    public Intent intentFor(String url, Bundle bundle) {
+        return intentFor(mContext, url, bundle);
+    }
+
+    public Intent intentFor(Context context, String url, Bundle extra) {
+        RouterParams params = this.paramsForUrl(url);
         Intent intent = new Intent();
         for (Entry<String, String> entry : params.openParams.entrySet()) {
             intent.putExtra(entry.getKey(), safeDecode(entry.getValue()));
         }
-		intent.setClass(context, params.getKlass());
-		return intent;
-	}
+        intent.setClass(context, params.getKlass());
+        if (extra != null) intent.putExtras(extra);
+        return intent;
+    }
 
 	private RouterParams paramsForUrl(String url) {
 		if (this.cachedRoutes.get(url) != null) {
