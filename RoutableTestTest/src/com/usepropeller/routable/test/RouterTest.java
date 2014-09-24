@@ -1,8 +1,5 @@
 package com.usepropeller.routable.test;
 
-import java.net.URLEncoder;
-import java.util.Map;
-
 import com.usepropeller.routable.Router;
 
 import junit.framework.Assert;
@@ -13,12 +10,11 @@ import android.test.AndroidTestCase;
 
 
 public class RouterTest extends AndroidTestCase {
-	private boolean _called;
+
     @Override
 	public void setUp() throws Exception {
 		super.setUp();
         Router.init(mContext);
-		this._called = false;
 	}
 
 	public void test_basic() {
@@ -35,7 +31,6 @@ public class RouterTest extends AndroidTestCase {
 
 	public void test_invalid_route() {
 		boolean exceptionThrown = false;
-
 		try {
 			Router.sharedRouter().intentFor("ming/4");
 		} catch (Router.RouteNotFoundException e) {
@@ -44,35 +39,7 @@ public class RouterTest extends AndroidTestCase {
 			e.printStackTrace();
 			fail("Incorrect exception throw: " + e.toString());
 		}
-
 		Assert.assertTrue("Invalid route did not throw exception", exceptionThrown);
-	}
-
-	public void test_code_callbacks() {
-		Router.sharedRouter().map("callback", ListActivity.class, new Router.RouterCallback() {
-            @Override
-            public void run(Map<String, String> params) {
-                RouterTest.this._called = true;
-            }
-        });
-
-		Router.sharedRouter().open("callback");
-
-		Assert.assertTrue(this._called);
-	}
-
-	public void test_code_callbacks_with_params() {
-		Router.sharedRouter().map("callback/:id", ListActivity.class, new Router.RouterCallback() {
-            @Override
-            public void run(Map<String, String> params) {
-                RouterTest.this._called = true;
-                Assert.assertEquals("123", params.get("id"));
-            }
-        });
-
-        Router.sharedRouter().open("callback/123");
-
-		Assert.assertTrue(this._called);
 	}
 
     public void test_complex_params() {

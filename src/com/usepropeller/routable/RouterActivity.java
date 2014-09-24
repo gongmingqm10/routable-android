@@ -27,7 +27,6 @@ public class RouterActivity extends Activity {
 	    }
 
 	    Router.sharedRouter().open(url);
-
 	    setResult(RESULT_OK, null);
 	    finish();
 	}
