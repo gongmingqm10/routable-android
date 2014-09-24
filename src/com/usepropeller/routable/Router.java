@@ -81,7 +81,7 @@ public class Router {
 
 	private Router() {
         if (mContext == null)
-            throw new ContextNotProvided("You need to supply a context for Router");
+            throw new ContextNotProvided();
 	}
 
     public static void init(Context context) {
@@ -110,7 +110,9 @@ public class Router {
      * @param format The URL being mapped; for example, "users/:id" or "groups/:id/topics/:topic_id"
      */
 	public void map(String format, RouterParams params) {
-		if (params == null) throw new RouteNotFoundException("There is no router found in Router");
+		if (params == null) {
+            throw new RouteNotFoundException("There is no router found in Router");
+        }
 		routers.put(format, params);
 	}
 
@@ -148,7 +150,7 @@ public class Router {
      */
 	private void openExternal(String url, Bundle extras, Context context) {
 		if (context == null) {
-			throw new ContextNotProvided("You need to supply a context for Router");
+			throw new ContextNotProvided();
 		}
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		if (extras != null) intent.putExtras(extras);
@@ -188,8 +190,9 @@ public class Router {
      * @param context The context which is used in the generated {@link Intent}
      */
 	public void open(String url, Bundle extras, Context context) {
-		if (context == null)
-            throw new ContextNotProvided("You need to supply a context for Router " + this.toString());
+		if (context == null) {
+            throw new ContextNotProvided();
+        }
 		Intent intent = this.intentFor(context, url);
 		if (extras != null) intent.putExtras(extras);
 		context.startActivity(intent);
@@ -258,6 +261,11 @@ public class Router {
 
 	public static class RouteNotFoundException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
+        private static final String NO_ROUTE_MESSAGE = "No route found for url";
+
+        public RouteNotFoundException() {
+            super(NO_ROUTE_MESSAGE);
+        }
 
 		public RouteNotFoundException(String message) {
 			super(message);
@@ -266,10 +274,10 @@ public class Router {
 
 	public static class ContextNotProvided extends RuntimeException {
 		private static final long serialVersionUID = 1L;
-
-		public ContextNotProvided(String message) {
-			super(message);
-		}
+        private static final String NO_CONTEXT_MESSAGE = "No context found for router";
+        public ContextNotProvided() {
+            super(NO_CONTEXT_MESSAGE);
+        }
 	}
 
     public static String safeEncode(String str) {
